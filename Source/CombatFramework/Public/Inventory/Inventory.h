@@ -35,12 +35,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnWeaponEquipped onWeaponEquipped;
 
-	// Callback method invoked when equipping a weapon
+	// Callback method invoked when unequipping a weapon
 	UPROPERTY(BlueprintAssignable)
 	FOnWeaponUnequipped onWeaponUnequipped;
 
 public:
-	// Weapon inventory represented as a dynamic array
+	// Weapon inventory represented as an array
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FCombatData> weaponInventory;
 
@@ -56,6 +56,20 @@ public:
 	// Current weapon
 	UPROPERTY(BlueprintReadOnly)
 	FCombatData currentWeapon;
+
+	/** 
+	Current firearm's ammo capacity:
+	- Ammo is not a finite resource (i.e. Ammo doesnt need to be purchased, nor aquired to refill the firearm's gauge)
+	- The player has an opportunity to refill ammo when applying damage  
+	- Damage is calculated based on the player's current level and bypassed all damage resistances
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,
+		meta = (
+			UIMin = "0",
+			ClampMin = "0"
+			)
+	)
+	int ammoGauge;
 
 public:
 	// Add a weapon to the weapon inventory

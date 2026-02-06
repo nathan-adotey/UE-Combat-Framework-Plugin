@@ -4,6 +4,7 @@
 
 UFirearm::UFirearm()
 {
+	kiCost = 20;
 	primaryWeaponMesh = NULL;
 	secondaryWeaponMesh = NULL;
 }

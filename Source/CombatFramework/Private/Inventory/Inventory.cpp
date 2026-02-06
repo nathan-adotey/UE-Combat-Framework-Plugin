@@ -7,6 +7,7 @@ UInventory::UInventory()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	weaponInventoryCapacity = 0;
+	ammoGauge = 5;
 }
 
 void UInventory::AddWeaponToInventory(FCombatData weapon)
