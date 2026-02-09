@@ -91,12 +91,17 @@ public:
 	// Add a weapon to the weapon inventory
 	UFUNCTION(BlueprintCallable)
 	void AddWeaponToInventory(FCombatData weapon);
-
-	// Removes a weapon at a given index
+	
+	/**
+	Remove a weapon from the inventory
+	- Use an index (integer) to locate an individual element from the weapon inventory array
+	- Re-sorts each remaining weapon's inventory index once a weapon exits the array
+	- Invokes a callback method which broadcasts the deleted weapon
+	*/
 	UFUNCTION(BlueprintCallable)
 	void RemoveWeaponFromInventory(int inventoryIndex);
 
-	// Returns the number of weapons within the inventory
+	// Returns the number of weapons within the inventory (integer)
 	UFUNCTION(BlueprintPure)
 	const int GetWeaponInventoryCount();
 

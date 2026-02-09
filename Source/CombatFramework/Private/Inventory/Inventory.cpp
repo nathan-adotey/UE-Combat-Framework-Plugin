@@ -15,10 +15,16 @@ void UInventory::AddWeaponToInventory(FCombatData weapon)
 {
 	if (weaponInventory.Num() < weaponInventoryCapacity || (weaponInventoryCapacity == 0))
 	{
-		FCombatData weaponData = weapon;
-		weaponData.inventoryIndex = weaponInventory.Num();
-		weaponInventory.Add(weaponData);
-		onWeaponAdded.Broadcast(weaponData);
+		try
+		{
+			weapon.inventoryIndex = weaponInventory.Num();
+			weaponInventory.Add(weapon);
+			onWeaponAdded.Broadcast(weapon);
+		}
+		catch (const std::exception&)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Invalid weapon"))
+		}
 	}
 }
 
@@ -28,10 +34,12 @@ void UInventory::RemoveWeaponFromInventory(int inventoryIndex)
 	{
 		onWeaponRemoved.Broadcast(weaponInventory[inventoryIndex]);
 		weaponInventory.RemoveAt(inventoryIndex);
+		
 		int i = 0;
+
 		for (i; i < weaponInventory.Num(); i++)
 		{
-			weaponInventory[i].inventoryIndex = i;
+			weaponInventory[i].inventoryIndex = i; // For-loop to update each item's array index after an element's removal
 		}
 	}
 	catch (const std::exception&)  // If an exception is thrown, generate an error log for the editor
