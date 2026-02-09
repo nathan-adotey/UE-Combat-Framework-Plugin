@@ -49,15 +49,17 @@ void UInventory::EquipWeapon(const FCombatData newWeapon)
 {
 	try
 	{
+		// Remove current weapon
 		onWeaponUnequipped.Broadcast(currentWeapon);
+
+		// Update the current weapon object & invoke a callback method
+		onWeaponEquipped.Broadcast(newWeapon);
+		currentWeapon = newWeapon;
 	}
 	catch (const std::exception&) // Throw an exception if the player does not have an equipped weapon
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NULL weapon data"))
 	}
-	
-	onWeaponEquipped.Broadcast(newWeapon);
-	currentWeapon = newWeapon;
 }
 
 void UInventory::EquipFirearm(UFirearm* newFirearm)
@@ -66,12 +68,13 @@ void UInventory::EquipFirearm(UFirearm* newFirearm)
 	{
 		try
 		{
+			// Update the current firearm object & invoke a callback method
 			currentFirearm = newFirearm;
 			onFirearmEquipped.Broadcast(currentFirearm);
 		}
 		catch (const std::exception&)
 		{
-
+			UE_LOG(LogTemp, Warning, TEXT("NULL firearm data")) // Throw an exception if the player does not have an equipped weapon
 		}
 	}
 }
