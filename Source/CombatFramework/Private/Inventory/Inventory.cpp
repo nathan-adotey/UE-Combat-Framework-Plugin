@@ -1,5 +1,6 @@
 // Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
+#include "Inventory/Items/Firearm.h"
 #include "Inventory/Inventory.h"
 
 UInventory::UInventory()
@@ -57,6 +58,28 @@ void UInventory::EquipWeapon(const FCombatData newWeapon)
 	
 	onWeaponEquipped.Broadcast(newWeapon);
 	currentWeapon = newWeapon;
+}
+
+void UInventory::EquipFirearm(UFirearm* newFirearm)
+{
+	if (newFirearm)
+	{
+		try
+		{
+			currentFirearm = newFirearm;
+			onFirearmEquipped.Broadcast(currentFirearm);
+		}
+		catch (const std::exception&)
+		{
+
+		}
+	}
+}
+
+void UInventory::UnequipFirearm()
+{
+	currentFirearm = NULL;
+	onFirearmUnequipped.Broadcast();
 }
 
 // Copyright © 2025, Nathan Adotey. All Rights Reserved.

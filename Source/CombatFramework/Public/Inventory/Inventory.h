@@ -7,12 +7,16 @@
 #include "Components/ActorComponent.h"
 #include "Inventory.generated.h"
 
+class UFirearm;
+
 // --- Delegate declarations ---
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponAdded, FCombatData, addedWeapon);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponRemoved, FCombatData, removedWeapon);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponEquipped, FCombatData, equippedWeapon);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponUnequipped, FCombatData, unequippedWeapon);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFirearmEquipped, UFirearm*, newFirearm);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFirearmUnequipped);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class COMBATFRAMEWORK_API UInventory : public UActorComponent
@@ -39,6 +43,14 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnWeaponUnequipped onWeaponUnequipped;
 
+	// Callback method invoked when equipping a firearm
+	UPROPERTY(BlueprintAssignable)
+	FOnFirearmEquipped onFirearmEquipped;
+
+	// Callback method invoked when unequipping a firearm
+	UPROPERTY(BlueprintAssignable)
+	FOnFirearmUnequipped onFirearmUnequipped;
+
 public:
 	// Weapon inventory represented as an array
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -56,6 +68,10 @@ public:
 	// Current weapon
 	UPROPERTY(BlueprintReadOnly)
 	FCombatData currentWeapon;
+
+	// Current firearm
+	UPROPERTY(BlueprintReadOnly)
+	UFirearm* currentFirearm;
 
 	/** 
 	Current firearm's ammo capacity:
@@ -87,6 +103,12 @@ public:
 	// Attempt to equip a weapon
 	UFUNCTION(BlueprintCallable)
 	void EquipWeapon(const FCombatData newWeapon);
+
+	// Equip a new firearm
+	void EquipFirearm(UFirearm* newFirearm);
+
+	// Unequip firearm (if valid)
+	void UnequipFirearm();
 };
 
 // Copyright © 2025, Nathan Adotey. All Rights Reserved.
