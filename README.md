@@ -10,11 +10,11 @@
 
 <!-- PROJECT LOGO -->
 <div align="center">
-  <h3 align="center">PROJECT V</h3>
+  <h3 align="center">Combat Framework Plugin (Unreal Engine 5)</h3>
   <p align="center">
-    Action-RPG project built in Unreal Engine 5
+    Universal combat framework designed for Unreal Engine projects 
     <br />
-    Microsoft Windows 10/11 • Linux • Nintendo Switch 2
+    Supports Unreal Engine versions 5.0 and up
     <br />
     <a href="https://www.youtube.com/@CRYFALLPRODUCTIONS ">YouTube</a>
     &middot;
@@ -27,38 +27,24 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Project-V aims to transcend the indie action RPG landscape by combining traditional gameplay and story mechanics with new ideas never explored with similar genres. The project's smart development practices and granular 
-attention to visual detail were inspired from these action-rpg/hack n' slash veterans:    
+Originally an internal project, the shift to publicize this plugin was made to enahnce the indie action RPG landscape. Smart, modular 
+development practices enable any game developer to maximize this plugin's features without affecting already-existing mechanics. This plugin
+aims to support the following genres:
 
-* Kingdom Hearts 2/3
-* Elden Ring/Dark Souls III
-* Ninja Gaiden II Black
-* Devil May Cry 3
-* Scissor-7 (Anime)
+* Souls
+* Action/Adventure games
+* Hack N' Slashes
 
 ### Installation
 
 _Below is an example on how to clone & utilize the repository:_
-1. Download the following software:
+1. Ensure the following software are installed and configured on your local system:
    * [Visual Studio IDE](https://visualstudio.microsoft.com/downloads/)
    * [Epic Games Launcher](https://www.unrealengine.com/en-US/download/)
 
 2. Clone the repo
    ```sh
-   git clone https://github.com/nathan-adotey/project-v.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-5. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-6. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
+   git clone https://github.com/nathan-adotey/UE-Combat-Framework-Plugin.git
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
