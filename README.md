@@ -10,7 +10,7 @@
 
 <!-- PROJECT LOGO -->
 <div align="center">
-  <h3 align="center">Combat Framework Plugin (Unreal Engine 5)</h3>
+  <h3 align="center">Combat Framework Plugin</h3>
   <p align="center">
     Universal combat framework designed for Unreal Engine projects 
     <br />
