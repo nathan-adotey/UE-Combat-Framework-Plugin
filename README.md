@@ -37,12 +37,12 @@ aims to support the following genres:
 
 ### Installation
 
-_Below is an example on how to clone & utilize the repository:_
-1. Ensure the following software are installed and configured on your local system:
+_Below is an example on how to utilize this plugin_
+1. Ensure the following software is installed and configured on your local system:
    * [Visual Studio IDE](https://visualstudio.microsoft.com/downloads/)
    * [Epic Games Launcher](https://www.unrealengine.com/en-US/download/)
 
-2. Clone the repo
+2. Clone the repository
    ```sh
    git clone https://github.com/nathan-adotey/UE-Combat-Framework-Plugin.git
    ```
