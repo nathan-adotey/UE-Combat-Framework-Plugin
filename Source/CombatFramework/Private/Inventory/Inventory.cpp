@@ -6,17 +6,20 @@
 UInventory::UInventory()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
+	
+	// Initialize member variables
 	weaponInventoryCapacity = 0;
 	ammoGauge = 5;
 }
 
 void UInventory::AddWeaponToInventory(FCombatData weapon)
 {
+	// Add the weapon to the inventory if the inventory capacity is not at its maximum
 	if (weaponInventory.Num() < weaponInventoryCapacity || (weaponInventoryCapacity == 0))
 	{
 		try
 		{
+			// Attempt to update the weapon inventory w/index
 			weapon.inventoryIndex = weaponInventory.Num();
 			weaponInventory.Add(weapon);
 			onWeaponAdded.Broadcast(weapon);
@@ -50,7 +53,7 @@ void UInventory::RemoveWeaponFromInventory(int inventoryIndex)
 
 const int UInventory::GetWeaponInventoryCount()
 {
-	return weaponInventory.Num();
+	return weaponInventory.Num(); // Number of weapons in the inventory
 }
 
 void UInventory::EquipWeapon(const FCombatData newWeapon)

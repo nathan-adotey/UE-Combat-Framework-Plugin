@@ -28,7 +28,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
 	FComboInfo groundFinisher;
 
-	// Execute an aerial finisher once the combo cound has reached its limit`
+	// Execute an aerial finisher once the combo cound has reached its limit
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
 	FComboInfo aerialFinisher;
 
