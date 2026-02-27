@@ -1,4 +1,4 @@
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
 #include "Inventory/Items/WeaponProfile.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -10,199 +10,103 @@
 UCombatSystem::UCombatSystem()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	groundComboSpeed = 1.0f;
-	airComboSpeed = 1.0f;
+	currentComboCount = 0;
+	comboTags.Add("Default");
 }
 
-void UCombatSystem::LightAttack()
+void UCombatSystem::Attack(EComboInput comboInput)
 {
-	if (CanExecuteNormalAtack() == true)
+	if (CanAttack() == true)
 	{
-		if (currentGroundComboCount < combatData.groundComboLimit)
+		TObjectPtr<ACharacter> playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
+		TArray<FComboInfo> comboData;
+		TArray<FName> comboTag;
+		comboData.Empty();
+		comboTag.Empty();
+		
+		switch (comboInput)
 		{
-			// Player reference
-			TObjectPtr<ACharacter> playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-
-			if (CanPlayHomingAttack() && bUseAerialHomingAttack)
+		case EComboInput::Light:
+			if (GetAerialStatus())
 			{
-				playerRef->PlayAnimMontage(combatData.weaponData->aerialHomingAttack, airComboSpeed);
-
-				// Update combo index
-				currentGroundComboCount = 0;
-				currentAirComboCount = 0;
-
-				damageImpact = EDamageImpact::Normal;
+				combatData.weaponData->attackCombos[currentComboCount].lightAerialCombo.GenerateKeyArray(comboData);
+				combatData.weaponData->attackCombos[currentComboCount].lightAerialCombo.GenerateValueArray(comboTag);
 			}
 			else
 			{
-				// Play attack animation
-				playerRef->PlayAnimMontage(combatData.weaponData->normalAttackCombos[currentGroundComboCount].montage, groundComboSpeed);
-				
-				// Update damage impact
-				damageImpact = combatData.weaponData->normalAttackCombos[currentGroundComboCount].damageImpact;
-
-				// Update combo index
-				currentGroundComboCount++;
-				currentAirComboCount = 0;
+				combatData.weaponData->attackCombos[currentComboCount].lightGroundCombo.GenerateKeyArray(comboData);
+				combatData.weaponData->attackCombos[currentComboCount].lightGroundCombo.GenerateValueArray(comboTag);		
 			}
-
-			// Invoke a callbak method within the editor
-			OnGroundAttack.Broadcast();
-			UE_LOG(LogTemp, Display, TEXT("[Combat System]: SUCCESS : Light attack"))
+			
+			break;
+		case EComboInput::Heavy:
+			if (GetAerialStatus())
+			{
+				combatData.weaponData->attackCombos[currentComboCount].heavyAerialCombo.GenerateKeyArray(comboData);
+				combatData.weaponData->attackCombos[currentComboCount].heavyAerialCombo.GenerateValueArray(comboTag);
+			}
+			else
+			{
+				combatData.weaponData->attackCombos[currentComboCount].heavyGroundCombo.GenerateKeyArray(comboData);
+				combatData.weaponData->attackCombos[currentComboCount].heavyGroundCombo.GenerateValueArray(comboTag);
+			}
+			break;
+		default:
+			break;
 		}
-		else if (CanPlayGroundFinisher() == true)
+
+		if (comboTags.Contains(comboTag[0]))
 		{
-			// Player reference
+			try
+			{
+				playerRef->PlayAnimMontage(comboData[0].montage, 1.0f);
+				OnGroundAttack.Broadcast();
+				damageImpact = comboData[0].damageImpact;
+
+				if (comboData[0].resetComboCount == true)
+				{
+					currentComboCount = 0;
+				}
+				else
+				{
+					currentComboCount++;
+				}
+			}
+			catch (const std::exception&)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Could not perform attack: Invoked an array element outside of its bounds"))
+			}
+		}
+	}
+}
+
+void UCombatSystem::OverrideAttack(EComboInput comboInput, FComboInfo overrideComboData, bool bResetComboCount, bool bIncreaseComboCount)
+{
+	if (CanAttack())
+	{
+		try
+		{
 			ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-
-			// Play ground finisher
-			playerRef->PlayAnimMontage(combatData.weaponData->groundFinisher.montage, groundComboSpeed);
-
-			// Update damage impact
-			damageImpact = combatData.weaponData->groundFinisher.damageImpact;
-
-			// Invoke a callbak method within the editor
+			playerRef->PlayAnimMontage(overrideComboData.montage, 1.0f);
+			damageImpact = overrideComboData.damageImpact;
 			OnGroundAttack.Broadcast();
-			SET_WARN_COLOR(COLOR_CYAN);
-			UE_LOG(LogTemp, Display, TEXT("[Combat System]: SUCCESS : Ground finisher"));
+			if (bIncreaseComboCount) { currentComboCount++; }
 		}
-	}
-	else if (CanExecuteAirAtack() == true)
-	{
-		if (currentAirComboCount < combatData.airComboLimit)
+		catch (const std::exception&)
 		{
-			// Player reference
-			TObjectPtr<ACharacter> playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-
-			// Play attack animation
-			playerRef->PlayAnimMontage(combatData.weaponData->aerialAttackCombos[currentAirComboCount].montage, airComboSpeed);
-
-			// Update damage impact
-			damageImpact = combatData.weaponData->aerialAttackCombos[currentAirComboCount].damageImpact;
-
-			// Update combo index
-			currentAirComboCount++;
-			currentGroundComboCount = 0;
-
-			// Invoke a callbak method within the editor
-			OnAirAttack.Broadcast();
-
-			// Editor log(s)
-			UE_LOG(LogTemp, Display, TEXT("[Combat System]: SUCCESS : Light attack"))
-		}
-		else if (CanPlayAerialFinisher() == true)
-		{
-			// Player reference
-			ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-
-			// Play ground finisher
-			playerRef->PlayAnimMontage(combatData.weaponData->aerialFinisher.montage, airComboSpeed);
-
-			// Update damage impact
-			damageImpact = combatData.weaponData->aerialFinisher.damageImpact;
-
-			// Invoke a callbak method within the editor
-			OnAirAttack.Broadcast();
-
-			// Editor log(s)
-			UE_LOG(LogTemp, Display, TEXT("[Combat System]: SUCCESS : Aerial finisher"));
+			UE_LOG(LogTemp, Warning, TEXT("Exception thrown while attempting to ovcerride an attack"))
 		}
 	}
 }
 
-void UCombatSystem::Trigger()
+void UCombatSystem::ResetComboCount()
 {
-	if (CanExecuteNormalAtack() == true)
-	{
-		// Player reference
-		TObjectPtr<ACharacter> playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-
-		// Play attack animation
-		playerRef->PlayAnimMontage(combatData.weaponData->launchAttack.montage, 1.0f);
-
-		// Update damage impact
-		damageImpact = combatData.weaponData->launchAttack.damageImpact;
-
-		// Invoke a callbak method within the editor
-		OnGroundAttack.Broadcast();
-
-		// Update combo index
-		currentGroundComboCount = 0;
-		currentAirComboCount = 0;
-
-		// Editor log(s)
-		UE_LOG(LogTemp, Log, TEXT("[Combat System]: SUCCESS : Launch attack"))
-	}
-	else if (CanExecuteAirAtack())
-	{
-		// Player reference
-		TObjectPtr<ACharacter> playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-
-		// Play attack animation
-		playerRef->PlayAnimMontage(combatData.weaponData->groundSlam.montage, 1.0f);
-
-		// Update damage impact
-		damageImpact = combatData.weaponData->groundSlam.damageImpact;
-
-		// Invoke a callbak method within the editor
-		OnGroundSlam.Broadcast();
-
-		// Update combo index
-		currentGroundComboCount = 0;
-		currentAirComboCount = 0;
-
-		// Editor log(s)
-		UE_LOG(LogTemp, Log, TEXT("[Combat System]: SUCCESS : Ground slam"))
-	}
+	currentComboCount = 0;
 }
 
-void UCombatSystem::RushAttack()
+const int UCombatSystem::GetCurrentComboCount()
 {
-	if (CanExecuteGroundRushAtack())
-	{
-		// Player reference
-		TObjectPtr<ACharacter> playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-
-		// Play attack animation
-		playerRef->PlayAnimMontage(combatData.weaponData->groundRush, groundComboSpeed);
-		
-		// Update combo index
-		currentGroundComboCount = 0;
-		currentAirComboCount = 0;
-
-		// Invoke a callbak method within the editor
-		OnGroundRushAttack.Broadcast();
-	}
-	else if (CanExecuteAerialRushAtack())
-	{
-		// Player reference
-		TObjectPtr<ACharacter> playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-
-		// Play attack animation
-		playerRef->PlayAnimMontage(combatData.weaponData->aerialRush, airComboSpeed);
-
-		// Update combo index
-		currentGroundComboCount = 0;
-		currentAirComboCount = 0;
-
-		// Invoke a callbak method within the editor
-		OnAerialRushAttack.Broadcast();
-	}
+	return static_cast<int>(currentComboCount);
 }
 
-void UCombatSystem::ResetGroundComboCounter()
-{
-	currentGroundComboCount = 0;
-}
-
-void UCombatSystem::ResetAirComboCounter()
-{
-	currentAirComboCount = 0;
-}
-
-const bool UCombatSystem::GetAerialStatus()
-{
-	return false;
-}
-
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.

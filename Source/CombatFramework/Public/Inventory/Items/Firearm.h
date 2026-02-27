@@ -1,4 +1,4 @@
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
 #pragma once
 
@@ -23,25 +23,25 @@ public:
 	UFirearm();
 
 public:
-	// Firearm type - Determines weapon behavior and overlay animation pose
+	// * Firearm type - Determines weapon behavior and overlay animation pose
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat Data")
 	EFirearmType firearmType;
 
-	// Overlay anim montage
+	// * Overlay anim montage
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat Data")
 	TObjectPtr<UAnimMontage> shootAnim;
 
-	// Fixed damage modifier (Scales with the player's overall level)
+	// * Fixed damage modifier (Scales with the player's overall level)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat Data")
 	int damage;
 
-	// Primary firearm
+	// * Primary firearm
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual Properties")
 	TObjectPtr<UStaticMesh> primaryWeaponMesh;
 
-	// Secondary firearm
+	// * Secondary firearm
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual Properties")
 	TObjectPtr<UStaticMesh> secondaryWeaponMesh;
 };
 
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.

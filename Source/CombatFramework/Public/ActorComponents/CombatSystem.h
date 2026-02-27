@@ -1,4 +1,4 @@
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
 #pragma once
 
@@ -7,8 +7,7 @@
 #include "Components/ActorComponent.h"
 #include "CombatSystem.generated.h"
 
-UENUM(BlueprintType)
-enum class EInputBehavior : uint8 { Hold, Press, Release };
+// * --- Declare function delegates for certain combat events
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGroundAttack);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAirAttack);
@@ -22,112 +21,76 @@ class COMBATFRAMEWORK_API UCombatSystem : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Constructor
+	// * Constructor
 	UCombatSystem();
 
-	// Function delegate which invokes a callback method when a ground attack has been executed
+	// * Function delegate which invokes a callback method when a ground attack has been executed
 	UPROPERTY(BlueprintAssignable)
 	FOnGroundAttack OnGroundAttack;
 
-	// Function delegate which invokes a callback method when an aerial attack has been executed
+	// * Function delegate which invokes a callback method when an aerial attack has been executed
 	UPROPERTY(BlueprintAssignable)
 	FOnAirAttack OnAirAttack;
 
-	// Function delegate which invokes a callback method when a ground slam has been executed
+	// * Function delegate which invokes a callback method when a ground slam has been executed
 	UPROPERTY(BlueprintAssignable)
 	FOnGroundSlam OnGroundSlam;
 
-	// Function delegate which invokes a callback method when a ground rush attack has been executed
+	// * Function delegate which invokes a callback method when a ground rush attack has been executed
 	UPROPERTY(BlueprintAssignable)
 	FOnGroundRushAttack OnGroundRushAttack;
 
-	// Function delegate which invokes a callback method when an aerial rush attack has been executed
+	// * Function delegate which invokes a callback method when an aerial rush attack has been executed
 	UPROPERTY(BlueprintAssignable)
 	FOnAerialRushAttack OnAerialRushAttack;
 
 public:
-	// Static combat data
+	// * Static combat data
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat System")
 	FCombatData combatData;
 
-	// Determines knockback and visual effect parameters when an attack lands
+	// * Determines knockback and visual effect parameters when an attack lands
 	UPROPERTY(BlueprintReadWrite, Category = "Combat Properties")
 	EDamageImpact damageImpact;
 
-	// Ground combo index; defaults to 0 when a different attack type or finisher executes.
-	UPROPERTY(BlueprintReadOnly, Category = "Combat Properties")
-	int currentGroundComboCount;
+	// * Repository of combo tags (Enable extended combos)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Properties")
+	TArray<FName> comboTags;
 
-	// Air combo index; defaults to 0 when a different attack type or finisher executes.
-	UPROPERTY(BlueprintReadOnly, Category = "Combat Properties")
-	int currentAirComboCount;
-
-	// Ground combo speed
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat System")
-	float groundComboSpeed;
-
-	// Air combo speed
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat System")
-	float airComboSpeed;
-
-	// Use an aerial homing attack when near an airborne enemy
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat System")
-	bool bUseAerialHomingAttack;
-
-protected:
-	// Returns TRUE if the player can execute a ground attack combo (Conditions set within the editor)
-	UFUNCTION(BlueprintImplementableEvent)
-	bool CanExecuteNormalAtack();
-
-	// Returns TRUE if the player can execute an aerial attack combo (Conditions set within the editor)
-	UFUNCTION(BlueprintImplementableEvent)
-	bool CanExecuteAirAtack();
-
-	// Returns TRUE if the player can execute a ground rush combo (Conditions set within the editor)
-	UFUNCTION(BlueprintImplementableEvent)
-	bool CanExecuteGroundRushAtack();
-
-	// Returns TRUE if the player can execute an aerial rush combo (Conditions set within the editor)
-	UFUNCTION(BlueprintImplementableEvent)
-	bool CanExecuteAerialRushAtack();
-
-	// Determines whether a ground finisher will play after a combo. (Editor-specific virtual function)
-	UFUNCTION(BlueprintImplementableEvent)
-	bool CanPlayGroundFinisher();
-
-	// Determines whether an aerial finisher will play after an air combo. (Editor-specific virtual function)
-	UFUNCTION(BlueprintImplementableEvent)
-	bool CanPlayAerialFinisher();
-
-	// Determines whether the player should auto-target towards an airborne enemy. (Editor-specific virtual function)
-	UFUNCTION(BlueprintImplementableEvent)
-	bool CanPlayHomingAttack();
+private:
+	// * Current combo count
+	unsigned short int currentComboCount;
 
 public:
-	// Attempt to execute a ground or aerial combo
+	// * Attempt to execute a ground or aerial attack combo
 	UFUNCTION(BlueprintCallable, Category = "Combat System")
-	void LightAttack();
+	void Attack(EComboInput comboInput);
 
-	// Use the actor's ground status to launch a target into the air, or perform a ground slam
+	// * Attempt to override a ground or aerial attack combo
 	UFUNCTION(BlueprintCallable, Category = "Combat System")
-	void Trigger();
+	void OverrideAttack(EComboInput comboInput, FComboInfo overrideComboData, bool bResetComboCount, bool bIncreaseComboCount);
 
-	// Eecute a ground or aerial rush attack
+	// * Reset the current combo count to 0
 	UFUNCTION(BlueprintCallable, Category = "Combat System")
-	void RushAttack();
+	void ResetComboCount();
 
-	// Reset ground combo count to 0
-	UFUNCTION(BlueprintCallable, Category = "Combat System")
-	void ResetGroundComboCounter();
+	// * Returns the current combo index
+	UFUNCTION(BlueprintPure, Category = "Combat System")
+	const int GetCurrentComboCount();
 
-	// Reset aerial combo count to 0
-	UFUNCTION(BlueprintCallable, Category = "Combat System")
-	void ResetAirComboCounter();
+public:
+	// * Returns TRUE if the player is in the air, FALSE if not (Conditions set within the editor)
+	UFUNCTION(BlueprintImplementableEvent)
+	bool GetAerialStatus();
 
-protected:
-	// Use the owner's velocity (Z-Axis) to determine whether they are in the air or not
-	UFUNCTION(BlueprintPure)
-	const bool GetAerialStatus();
+	// * Returns TRUE if the player can execute an attack combo (Conditions set within the editor)
+	UFUNCTION(BlueprintImplementableEvent)
+	bool CanAttack();
+
+	// * Returns TRUE if the player can override their default ground combo sequence (Conditions set within the editor)
+	UFUNCTION(BlueprintImplementableEvent)
+	bool CanOverrideAttack();
+
 };
 
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.

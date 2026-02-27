@@ -1,4 +1,4 @@
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
 #pragma once
 
@@ -9,7 +9,7 @@
 
 class UFirearm;
 
-// --- Delegate declarations ---
+// * --- Delegate declarations ---
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponAdded, FCombatData, addedWeapon);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponRemoved, FCombatData, removedWeapon);
@@ -24,39 +24,48 @@ class COMBATFRAMEWORK_API UInventory : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	// Constructor
+	// * Constructor
 	UInventory();
 
-	// Callback method invoked when adding a weapon to the inventory
+	// * Callback method invoked when adding a weapon to the inventory
 	UPROPERTY(BlueprintAssignable)
 	FOnWeaponAdded onWeaponAdded;
 
-	// Callback method invoked when removing a weapon from the inventory
+	// * Callback method invoked when removing a weapon from the inventory
 	UPROPERTY(BlueprintAssignable)
 	FOnWeaponRemoved onWeaponRemoved;
 
-	// Callback method invoked when equipping a weapon
+	// * Callback method invoked when equipping a weapon
 	UPROPERTY(BlueprintAssignable)
 	FOnWeaponEquipped onWeaponEquipped;
 
-	// Callback method invoked when unequipping a weapon
+	// * Callback method invoked when unequipping a weapon
 	UPROPERTY(BlueprintAssignable)
 	FOnWeaponUnequipped onWeaponUnequipped;
 
-	// Callback method invoked when equipping a firearm
+	// * Callback method invoked when equipping a firearm
 	UPROPERTY(BlueprintAssignable)
 	FOnFirearmEquipped onFirearmEquipped;
 
-	// Callback method invoked when unequipping a firearm
+	// * Callback method invoked when unequipping a firearm
 	UPROPERTY(BlueprintAssignable)
 	FOnFirearmUnequipped onFirearmUnequipped;
 
 public:
-	// Weapon inventory represented as an array
+	// * Weapon inventory represented as an array
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FCombatData> weaponInventory;
 
-	// Capacity limit for the weapon inventory. A value of "0" indicates no capacity limit.
+	/**
+	Quick access inventory represented as an array
+	- Comprises of consumables (non-healing items), skills, and other actions
+	- Bound to the gamepad's face buttons, or the keyboard's numbers
+	- Array accounts for a maximum of 4 elements
+	*/
+	UPROPERTY(BlueprintReadOnly, Category = "Inventory")
+	TArray<UItemBase*> quickAccessInventory;
+
+	// * Capacity limit for the weapon inventory. A value of "0" indicates no capacity limit.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, 
 		meta = (
 			UIMin = "0",
@@ -65,30 +74,30 @@ public:
 	)
 	int weaponInventoryCapacity;
 
-	// Current weapon
+	// * Current weapon
 	UPROPERTY(BlueprintReadOnly)
 	FCombatData currentWeapon;
 
-	// Current firearm
+	// * Current firearm
 	UPROPERTY(BlueprintReadOnly)
 	UFirearm* currentFirearm;
 
 	/** 
 	Current firearm's ammo capacity:
 	- Ammo is not a finite resource (i.e. Ammo doesnt need to be purchased, nor aquired to refill the firearm's gauge)
-	- The player has an opportunity to refill ammo when applying damage  
+	- The player has an opportunity to refill ammo when applying damage
 	- Damage is calculated based on the player's current level and bypassed all damage resistances
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,
 		meta = (
 			UIMin = "0",
 			ClampMin = "0"
-			)
+		)
 	)
 	int ammoGauge;
 
 public:
-	// Add a weapon to the weapon inventory
+	// * Add a weapon to the weapon inventory
 	UFUNCTION(BlueprintCallable)
 	void AddWeaponToInventory(FCombatData weapon);
 	
@@ -101,19 +110,39 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RemoveWeaponFromInventory(int inventoryIndex);
 
-	// Returns the number of weapons within the inventory (integer)
+	// * Returns the number of weapons within the inventory (integer)
 	UFUNCTION(BlueprintPure)
 	const int GetWeaponInventoryCount();
 
-	// Attempt to equip a weapon
+	// * Attempt to equip a weapon
 	UFUNCTION(BlueprintCallable)
 	void EquipWeapon(const FCombatData newWeapon);
 
-	// Equip a new firearm
+	// * Equip a new firearm
 	void EquipFirearm(UFirearm* newFirearm);
 
-	// Unequip firearm (if valid)
+	// * Unequip firearm (if valid)
 	void UnequipFirearm();
+
+	/**
+	Equips an item for the quick-access management
+	- TObjectPtr<UItemBase> item: Item the player chooses to equip (if valid)
+	- Prevents the quick access inventory from exceeding four elements
+	*/
+	UFUNCTION(BlueprintCallable)
+	void EquipQuickAccessItem(UItemBase* item, const EQuickAccessSlotIndex targetSlot);
+
+	/**
+	Removes an item from the quick-access inventory
+	- bool bRemoveAllItems: Removes every item from the quick-access array
+	- Empty array element are represented as NULL
+	*/
+	UFUNCTION(BlueprintCallable)
+	void RemoveQuickAccessItem(const EQuickAccessSlotIndex targetSlot, bool bRemoveAllItems);
+
+private:
+	// * The return value represents an array element's index mapped to a specific button input
+	const unsigned short int GetQuickAccessArrayIndex(const EQuickAccessSlotIndex targetSlot);
 };
 
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.

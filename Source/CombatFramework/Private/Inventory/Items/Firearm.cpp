@@ -1,4 +1,4 @@
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
 #include "Inventory/Items/Firearm.h"
 
@@ -8,4 +8,4 @@ UFirearm::UFirearm()
 	secondaryWeaponMesh = NULL;
 }
 
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.

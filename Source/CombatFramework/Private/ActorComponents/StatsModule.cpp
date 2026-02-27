@@ -1,11 +1,11 @@
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
 #include "Kismet/KismetMathLibrary.h"
 #include "ActorComponents/StatsModule.h"
 
 UStatsModule::UStatsModule()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	
 }
 
 const float UStatsModule::CalculateMaximumHealth()
@@ -114,4 +114,4 @@ void UStatsModule::DrainMana(const float amount)
 	OnManaModified.Broadcast(currentMana / maximumMana);
 }
 
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.

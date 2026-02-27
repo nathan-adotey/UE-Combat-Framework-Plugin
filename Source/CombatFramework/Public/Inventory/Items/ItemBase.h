@@ -1,4 +1,4 @@
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
 #pragma once
 
@@ -13,19 +13,23 @@ class COMBATFRAMEWORK_API UItemBase : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-	// Constructor
+	// * Constructor
 	UItemBase();
 
 public:
-	// Item name
+	// * Item name
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default")
 	FName name;
 
-	// Short item description
+	// * Short item description
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default")
 	FName description;
 
-	// Currency spent when purchasing an item (Clamped between $0 and $1,000,000)
+	// * Item category
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default")
+	EItemCategory itemCategory;
+
+	// * Currency spent when purchasing an item (Clamped between $0 and $1,000,000)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default", 
 		meta = (
 			ClampMin = "0",
@@ -36,7 +40,7 @@ public:
 	)
 	int purchaseCost;
 
-	// Currency received when selling an item (Clamped between $0 and $1,000,000)
+	// * Currency received when selling an item (Clamped between $0 and $1,000,000)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default",
 		meta = (
 			ClampMin = "0",
@@ -48,4 +52,4 @@ public:
 	int sellCost;
 };
 
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.

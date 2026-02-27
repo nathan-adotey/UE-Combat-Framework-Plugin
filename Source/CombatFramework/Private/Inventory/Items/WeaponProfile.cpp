@@ -1,5 +1,9 @@
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
 #include "Inventory/Items/WeaponProfile.h"
 
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+UWeaponProfile::UWeaponProfile()
+{
+	itemCategory = EItemCategory::Weapon;
+}
+

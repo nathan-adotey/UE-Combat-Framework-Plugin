@@ -1,4 +1,4 @@
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
 #include "Inventory/Items/ItemBase.h"
 
@@ -8,4 +8,4 @@ UItemBase::UItemBase()
 	sellCost = 500;
 }
 
-// Copyright © 2025, Nathan Adotey. All Rights Reserved.
+// * Copyright © 2025, Nathan Adotey. All Rights Reserved.
