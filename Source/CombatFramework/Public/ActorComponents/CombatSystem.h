@@ -78,6 +78,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Combat System")
 	const int GetCurrentComboCount();
 
+	// * Calculates a transform for the motion warp target
+	UFUNCTION(BlueprintPure, Category = "Combat System")
+	const FTransform CalculateMotionWarpTargetTransform(AActor* targetActor);
+
 public:
 	// * Returns TRUE if the player is in the air, FALSE if not (Conditions set within the editor)
 	UFUNCTION(BlueprintImplementableEvent)

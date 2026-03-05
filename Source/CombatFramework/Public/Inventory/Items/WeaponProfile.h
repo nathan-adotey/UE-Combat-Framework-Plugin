@@ -26,26 +26,48 @@ public:
 	// * Physical attack modifier (i.e. light attack combos, physical skills)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
 		meta = (
-			ClampMin = "0",
-			ClampMax = "2",
-			UIMin="0",
-			UIMax="2"
+			ClampMin = "1",
+			ClampMax = "1000",
+			UIMin="1",
+			UIMax="1000"
 		)
 	)
-	float physicalAttackScaling;
+	int basePhysicalDamage;
 
-	// * Growth rate for physical damage on weapon level up
+	// * Default scaling for physical damage
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
 		meta = (
 			ClampMin = "0",
-			ClampMax = "1",
+			ClampMax = "2",
 			UIMin = "0",
-			UIMax = "1"
+			UIMax = "2"
 		)
 	)
-	float physicalAttackGrowthRate;
+	float baseStrengthScaling;
+
+	// * Strength scale multiplier per weapon level
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
+		meta = (
+			ClampMin = "0",
+			ClampMax = "2",
+			UIMin = "0",
+			UIMax = "2"
+			)
+	)
+	float strengthScalingRate;
 
 	// * Ki attack modifier (i.e. light attack combos, physical skills)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
+		meta = (
+			ClampMin = "0",
+			ClampMax = "100",
+			UIMin = "0",
+			UIMax = "100"
+		)
+	)
+	int baseKiDamage;
+
+	// * Default scaling for ki damage
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
 		meta = (
 			ClampMin = "0",
@@ -56,38 +78,49 @@ public:
 	)
 	float kiScaling;
 
-	// * Growth rate for ki damage on weapon level up
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
-		meta = (
-			ClampMin = "0",
-			ClampMax = "1",
-			UIMin = "0",
-			UIMax = "1"
-		)
-	)
-	float kiGrowthRate;
-
-	// * Ki attack modifier (i.e. light attack combos, physical skills)
+	// * Ki scale multiplier per weapon level
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
 		meta = (
 			ClampMin = "0",
 			ClampMax = "2",
 			UIMin = "0",
 			UIMax = "2"
-		)
+			)
 	)
-	float arcaneScaling;
+	float kiScalingRate;
 
-	// * Growth rate for ki damage on weapon level up
+	// * Ki attack modifier (i.e. light attack combos, physical skills)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
 		meta = (
 			ClampMin = "0",
-			ClampMax = "1",
+			ClampMax = "100",
 			UIMin = "0",
-			UIMax = "1"
+			UIMax = "1000"
+		)
+	)
+	int baseArcaneDamage;
+
+	// * Default scaling for ki damage
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
+		meta = (
+			ClampMin = "0",
+			ClampMax = "2",
+			UIMin = "0",
+			UIMax = "2"
 			)
 	)
-	float arcaneGrowthRate;
+	float basearcaneScaling;
+
+	// * Arcane scale multiplier per weapon level
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
+		meta = (
+			ClampMin = "0",
+			ClampMax = "2",
+			UIMin = "0",
+			UIMax = "2"
+			)
+	)
+	float arcaneScalingRate;
 
 	// * Primary mesh (i.e. Right-handed armaments)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual Properties")

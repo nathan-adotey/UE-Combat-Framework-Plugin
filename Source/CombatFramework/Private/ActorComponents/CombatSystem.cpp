@@ -55,26 +55,19 @@ void UCombatSystem::Attack(EComboInput comboInput)
 			break;
 		}
 
-		if (comboTags.Contains(comboTag[0]))
+		if (comboTags.Contains(comboTag[0]) && (IsValid(comboData[0].montage)))
 		{
-			try
-			{
-				playerRef->PlayAnimMontage(comboData[0].montage, 1.0f);
-				OnGroundAttack.Broadcast();
-				damageImpact = comboData[0].damageImpact;
+			playerRef->PlayAnimMontage(comboData[0].montage, 1.0f);
+			OnGroundAttack.Broadcast();
+			damageImpact = comboData[0].damageImpact;
 
-				if (comboData[0].resetComboCount == true)
-				{
-					currentComboCount = 0;
-				}
-				else
-				{
-					currentComboCount++;
-				}
-			}
-			catch (const std::exception&)
+			if (comboData[0].resetComboCount == true)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Could not perform attack: Invoked an array element outside of its bounds"))
+				currentComboCount = 0;
+			}
+			else
+			{
+				currentComboCount++;
 			}
 		}
 	}
@@ -82,20 +75,13 @@ void UCombatSystem::Attack(EComboInput comboInput)
 
 void UCombatSystem::OverrideAttack(EComboInput comboInput, FComboInfo overrideComboData, bool bResetComboCount, bool bIncreaseComboCount)
 {
-	if (CanAttack())
+	if (CanAttack() && (IsValid(overrideComboData.montage)))
 	{
-		try
-		{
-			ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-			playerRef->PlayAnimMontage(overrideComboData.montage, 1.0f);
-			damageImpact = overrideComboData.damageImpact;
-			OnGroundAttack.Broadcast();
-			if (bIncreaseComboCount) { currentComboCount++; }
-		}
-		catch (const std::exception&)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Exception thrown while attempting to ovcerride an attack"))
-		}
+		ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
+		playerRef->PlayAnimMontage(overrideComboData.montage, 1.0f);
+		damageImpact = overrideComboData.damageImpact;
+		OnGroundAttack.Broadcast();
+		if (bIncreaseComboCount) { currentComboCount++; }
 	}
 }
 
@@ -107,6 +93,11 @@ void UCombatSystem::ResetComboCount()
 const int UCombatSystem::GetCurrentComboCount()
 {
 	return static_cast<int>(currentComboCount);
+}
+
+const FTransform UCombatSystem::CalculateMotionWarpTargetTransform(AActor* targetActor)
+{
+	return FTransform();
 }
 
 // * Copyright © 2025, Nathan Adotey. All Rights Reserved.

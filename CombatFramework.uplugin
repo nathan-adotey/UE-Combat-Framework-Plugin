@@ -1,10 +1,10 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "0.0.1",
+	"VersionName": "ALPHA.26.02",
 	"FriendlyName": "Combat Framework",
 	"Description": "Common features seen in action and fighting games",
-	"Category": "Custom",
+	"Category": "Combat",
 	"CreatedBy": "Nathan Adotey",
 	"CreatedByURL": "",
 	"DocsURL": "",

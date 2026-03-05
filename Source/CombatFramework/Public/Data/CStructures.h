@@ -104,6 +104,17 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FDamageResistances damageResistances;
+
+	// * Health multiplier
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,
+		meta = (
+			ClampMin = "0.1",
+			ClampMax = "100",
+			UIMin = "0.1",
+			UIMax = "100"
+		)
+	)
+	float healthMultiplier = 1;
 };
 
 USTRUCT(BlueprintType)
@@ -123,42 +134,9 @@ public:
 			ClampMax = "10",
 			UIMin = "1",
 			UIMax = "10"
-			)
+		)
 	)
 	int currentLevel = 1;
-
-	// * Maximum combo limit for ground attacks
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,
-		meta = (
-			ClampMin = "0",
-			ClampMax = "10",
-			UIMin = "0",
-			UIMax = "10"
-			)
-	)
-	int attackBonus = 0;
-
-	// * Maximum combo limit for ground attacks
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,
-		meta = (
-			ClampMin = "1",
-			ClampMax = "10",
-			UIMin = "1",
-			UIMax = "10"
-			)
-	)
-	int groundComboLimit = 3;
-
-	// * Maximum combo limit for air attacks
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,
-		meta = (
-			ClampMin = "1",
-			ClampMax = "10",
-			UIMin = "1",
-			UIMax = "10"
-			)
-	)
-	int airComboLimit = 2;
 
 	// * Auto-generates when a weapon is added to an inventory
 	UPROPERTY(BlueprintReadOnly)
@@ -224,7 +202,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FComboInfo, FName> heavyAerialCombo;
 };
-
-
 
 // * Copyright © 2025, Nathan Adotey. All Rights Reserved.

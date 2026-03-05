@@ -40,20 +40,44 @@ public:
 	FOnCharacterDeath OnCharacterDeath;
 
 public:
+	// * Actor name
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Basic Info")
+	FText name;
+
 	// * Maximum health value
-	UPROPERTY(BlueprintReadOnly, Category = "Base Stats")
+	UPROPERTY(BlueprintReadOnly, Category = "Base Stats",
+		meta = (
+			UIMin = "0",
+			ClampMin = "0"
+		)
+	)
 	float maximumHealth;
 
 	// * Maximum mana value
-	UPROPERTY(BlueprintReadOnly, Category = "Base Stats")
+	UPROPERTY(BlueprintReadOnly, Category = "Base Stats",
+		meta = (
+			UIMin = "0",
+			ClampMin = "0"
+		)
+	)
 	float maximumMana;
 
 	// * Current health value
-	UPROPERTY(BlueprintReadOnly, Category = "Base Stats")
+	UPROPERTY(BlueprintReadOnly, Category = "Base Stats",
+		meta = (
+			UIMin = "0",
+			ClampMin = "0"
+		)
+	)
 	float currentHealth;
 
 	// * Current mana value
-	UPROPERTY(BlueprintReadOnly, Category = "Base Stats")
+	UPROPERTY(BlueprintReadOnly, Category = "Base Stats",
+		meta = (
+			UIMin = "0",
+			ClampMin = "0"
+		)
+	)
 	float currentMana;
 
 	// * Player stats & resistances
@@ -99,6 +123,18 @@ public:
 	// * Drain mana by a set amount
 	UFUNCTION(BlueprintCallable)
 	void DrainMana(const float amount);
+
+	// * Calculate physical weapon damage
+	UFUNCTION(BlueprintPure)
+	const float CalculatePhysicalWeaponDamage(FCombatData combatProfile);
+
+	// * Calculate ki weapon damage
+	UFUNCTION(BlueprintPure)
+	const float CalculateKiWeaponDamage(FCombatData combatProfile);
+
+	// * Calculate arcane weapon damage
+	UFUNCTION(BlueprintPure)
+	const float CalculateArcaneWeaponDamage(FCombatData combatProfile);
 
 private:
 	const float CalculateMaximumHealth();

@@ -17,37 +17,23 @@ void UInventory::AddWeaponToInventory(FCombatData weapon)
 	// * Add the weapon to the inventory if the inventory capacity is not at its maximum
 	if (weaponInventory.Num() < weaponInventoryCapacity || (weaponInventoryCapacity == 0))
 	{
-		try
-		{
-			// * Attempt to update the weapon inventory w/index
-			weapon.inventoryIndex = weaponInventory.Num();
-			weaponInventory.Add(weapon);
-			onWeaponAdded.Broadcast(weapon);
-		}
-		catch (const std::exception&)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Invalid weapon"))
-		}
+		// * Attempt to update the weapon inventory w/index
+		weapon.inventoryIndex = weaponInventory.Num();
+		weaponInventory.Add(weapon);
+		onWeaponAdded.Broadcast(weapon);
 	}
 }
 
 void UInventory::RemoveWeaponFromInventory(int inventoryIndex)
 {	
-	try
-	{
-		onWeaponRemoved.Broadcast(weaponInventory[inventoryIndex]);
-		weaponInventory.RemoveAt(inventoryIndex);
-		
-		int i = 0;
+	onWeaponRemoved.Broadcast(weaponInventory[inventoryIndex]);
+	weaponInventory.RemoveAt(inventoryIndex);
 
-		for (i; i < weaponInventory.Num(); i++)
-		{
-			weaponInventory[i].inventoryIndex = i; // * For-loop to update each item's array index after an element's removal
-		}
-	}
-	catch (const std::exception&)  // * If an exception is thrown, generate an error log for the editor
+	int i = 0;
+
+	for (i; i < weaponInventory.Num(); i++)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid element"))
+		weaponInventory[i].inventoryIndex = i; // * For-loop to update each item's array index after an element's removal
 	}
 }
 
@@ -58,35 +44,21 @@ const int UInventory::GetWeaponInventoryCount()
 
 void UInventory::EquipWeapon(const FCombatData newWeapon)
 {
-	try
-	{
-		// * Remove current weapon
-		onWeaponUnequipped.Broadcast(currentWeapon);
+	// * Remove current weapon
+	onWeaponUnequipped.Broadcast(currentWeapon);
 
-		// * Update the current weapon object & invoke a callback method
-		onWeaponEquipped.Broadcast(newWeapon);
-		currentWeapon = newWeapon;
-	}
-	catch (const std::exception&) // * Throw an exception if the player does not have an equipped weapon
-	{
-		UE_LOG(LogTemp, Warning, TEXT("NULL weapon data"))
-	}
+	// * Update the current weapon object & invoke a callback method
+	onWeaponEquipped.Broadcast(newWeapon);
+	currentWeapon = newWeapon;
 }
 
 void UInventory::EquipFirearm(UFirearm* newFirearm)
 {
 	if (newFirearm)
 	{
-		try
-		{
-			// * Update the current firearm object & invoke a callback method
-			currentFirearm = newFirearm;
-			onFirearmEquipped.Broadcast(currentFirearm);
-		}
-		catch (const std::exception&)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("NULL firearm data")) // * Throw an exception if the player does not have an equipped weapon
-		}
+		// * Update the current firearm object & invoke a callback method
+		currentFirearm = newFirearm;
+		onFirearmEquipped.Broadcast(currentFirearm);
 	}
 }
 
@@ -99,15 +71,7 @@ void UInventory::UnequipFirearm()
 void UInventory::EquipQuickAccessItem(UItemBase* item, const EQuickAccessSlotIndex targetSlot)
 {
 	// * --- Add the item to the quick-access inventory
-	try
-	{
-		quickAccessInventory[GetQuickAccessArrayIndex(targetSlot)] = item;
-	}
-	catch (const std::exception&)
-	{
-		
-		UE_LOG(LogTemp, Warning, TEXT("Exception thrown while attempting to equip a quick-access item"))
-	}
+	quickAccessInventory[GetQuickAccessArrayIndex(targetSlot)] = item;
 }
 
 void UInventory::RemoveQuickAccessItem(const EQuickAccessSlotIndex targetSlot, bool bRemoveAllItems)
@@ -119,26 +83,12 @@ void UInventory::RemoveQuickAccessItem(const EQuickAccessSlotIndex targetSlot, b
 
 		for (arrayIndex; arrayIndex <= 3; arrayIndex++)
 		{
-			try
-			{
-				quickAccessInventory[arrayIndex] = NULL;
-			}
-			catch (const std::exception&)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Exception thrown while attempting to clear a quick-access item"))
-			}
+			quickAccessInventory[arrayIndex] = NULL;
 		}
 	}
 	else
 	{
-		try
-		{
-			quickAccessInventory[GetQuickAccessArrayIndex(targetSlot)] = NULL;
-		}
-		catch (const std::exception&)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Exception thrown while attempting to clear a quick-access item"))
-		}
+		quickAccessInventory[GetQuickAccessArrayIndex(targetSlot)] = NULL;
 	}
 }
 
