@@ -15,7 +15,7 @@ enum class EComboInput : uint8
 };
 
 UENUM(BlueprintType)
-enum class EWeaponCategory : uint8 { Melee, Sword, Daggers, Scythe };
+enum class EWeaponCategory : uint8 { Melee, Sword, Daggers, Scythe, GunSword };
 
 UENUM(BlueprintType)
 enum class EItemCategory : uint8
@@ -28,7 +28,7 @@ enum class EItemCategory : uint8
 
 UENUM(BlueprintType)
 enum class EDamageImpact : uint8 { None, Light, Normal, Heavy, Projectile, Knockback, Knockdown, LaunchToAir, SlamToGround };
-
+           
 UENUM(BlueprintType)
 enum class EQuickAccessSlotIndex : uint8
 {

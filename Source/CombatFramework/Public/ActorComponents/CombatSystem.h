@@ -9,7 +9,7 @@
 
 // * --- Declare function delegates for certain combat events
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGroundAttack);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGroundAttack, FComboInfo, comboInfo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAirAttack);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGroundSlam);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGroundRushAttack);

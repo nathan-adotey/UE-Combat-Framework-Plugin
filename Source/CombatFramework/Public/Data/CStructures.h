@@ -163,11 +163,11 @@ public:
 
 	// * Modifies attack output based on the ki stat
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "1.0", UIMin = "0", UIMax = "1.0"))
-	float kiDamageModifier = 0.0f;
+	float kiDamageModifier = 1.0f;
 
 	// * Modifies attack output based on the arcane stat
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "1.0", UIMin = "0", UIMax = "1.0"))
-	float arcaneDamageModifier = 0.0f;
+	float arcaneDamageModifier = 1.0f;
 
 	// * Resets combo count
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

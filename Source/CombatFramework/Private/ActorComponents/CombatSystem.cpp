@@ -58,7 +58,7 @@ void UCombatSystem::Attack(EComboInput comboInput)
 		if (comboTags.Contains(comboTag[0]) && (IsValid(comboData[0].montage)))
 		{
 			playerRef->PlayAnimMontage(comboData[0].montage, 1.0f);
-			OnGroundAttack.Broadcast();
+			OnGroundAttack.Broadcast(comboData[0]);
 			damageImpact = comboData[0].damageImpact;
 
 			if (comboData[0].resetComboCount == true)
@@ -80,7 +80,7 @@ void UCombatSystem::OverrideAttack(EComboInput comboInput, FComboInfo overrideCo
 		ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
 		playerRef->PlayAnimMontage(overrideComboData.montage, 1.0f);
 		damageImpact = overrideComboData.damageImpact;
-		OnGroundAttack.Broadcast();
+		OnGroundAttack.Broadcast(overrideComboData);
 		if (bIncreaseComboCount) { currentComboCount++; }
 	}
 }
