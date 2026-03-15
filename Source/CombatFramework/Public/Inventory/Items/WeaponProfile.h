@@ -23,6 +23,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
 	TArray<FComboSchema> attackCombos;
 
+	// * Sprint attack (Light input)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
+	FComboInfo lightSprintAttack;
+
+	// * Sprint attack (Heavy input)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
+	FComboInfo heavySprintAttack;
+
+	// * Dodge attack (Light input)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
+	FComboInfo lightDodgeAttack;
+
+	// * Dodge attack (Heavy input)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
+	FComboInfo heavyDodgeAttack;
+
 	// * Physical attack modifier (i.e. light attack combos, physical skills)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
 		meta = (
@@ -121,14 +137,6 @@ public:
 			)
 	)
 	float arcaneScalingRate;
-
-	// * Primary mesh (i.e. Right-handed armaments)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual Properties")
-	TObjectPtr<UStaticMesh> primaryWeaponMesh;
-
-	// * Secondary mesh (i.e. Left-handed armaments, shields, sheaths, etc)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual Properties")
-	TObjectPtr<UStaticMesh> secondaryWeaponMesh;
 };
 
 // * Copyright © 2025, Nathan Adotey. All Rights Reserved.

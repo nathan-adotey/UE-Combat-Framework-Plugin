@@ -129,6 +129,8 @@ const float UStatsModule::CalculatePhysicalWeaponDamage(FCombatData combatProfil
 	float weaponDamage = combatProfile.weaponData->basePhysicalDamage * (combatProfile.weaponData->baseStrengthScaling + ((combatProfile.weaponData->strengthScalingRate * combatProfile.currentLevel)));
 	float f_stat = static_cast<float>(playerStats.strength);
 	
+
+	// Use linear interpolation to apply stat caps
 	if (f_stat <= 30.0)
 	{
 		float strengthScaling = ((f_stat) / (30.0)) * 0.30;

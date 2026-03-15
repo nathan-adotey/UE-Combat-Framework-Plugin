@@ -18,70 +18,63 @@ void UCombatSystem::Attack(EComboInput comboInput)
 {
 	if (CanAttack() == true)
 	{
-		TObjectPtr<ACharacter> playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-		TArray<FComboInfo> comboData;
-		TArray<FName> comboTag;
 		comboData.Empty();
 		comboTag.Empty();
-		
-		switch (comboInput)
-		{
-		case EComboInput::Light:
-			if (GetAerialStatus())
-			{
-				combatData.weaponData->attackCombos[currentComboCount].lightAerialCombo.GenerateKeyArray(comboData);
-				combatData.weaponData->attackCombos[currentComboCount].lightAerialCombo.GenerateValueArray(comboTag);
-			}
-			else
-			{
-				combatData.weaponData->attackCombos[currentComboCount].lightGroundCombo.GenerateKeyArray(comboData);
-				combatData.weaponData->attackCombos[currentComboCount].lightGroundCombo.GenerateValueArray(comboTag);		
-			}
-			
-			break;
-		case EComboInput::Heavy:
-			if (GetAerialStatus())
-			{
-				combatData.weaponData->attackCombos[currentComboCount].heavyAerialCombo.GenerateKeyArray(comboData);
-				combatData.weaponData->attackCombos[currentComboCount].heavyAerialCombo.GenerateValueArray(comboTag);
-			}
-			else
-			{
-				combatData.weaponData->attackCombos[currentComboCount].heavyGroundCombo.GenerateKeyArray(comboData);
-				combatData.weaponData->attackCombos[currentComboCount].heavyGroundCombo.GenerateValueArray(comboTag);
-			}
-			break;
-		default:
-			break;
-		}
 
+		previousComboInput = currentComboInput;
+		currentComboInput = comboInput;
+
+		UpdateComboInfoArrays(comboInput);
+		
 		if (comboTags.Contains(comboTag[0]) && (IsValid(comboData[0].montage)))
 		{
-			playerRef->PlayAnimMontage(comboData[0].montage, 1.0f);
-			OnGroundAttack.Broadcast(comboData[0]);
-			damageImpact = comboData[0].damageImpact;
-
-			if (comboData[0].resetComboCount == true)
+			if ((comboData[0].resetComboCountOnSeperateInput == true) && (currentComboInput != previousComboInput))
 			{
 				currentComboCount = 0;
+				UpdateComboInfoArrays(comboInput);
+			}
+
+			if (CanSprintAttack())
+			{
+				switch (comboInput)
+				{
+				case EComboInput::Light:
+					PlayAttackMontage(combatData.weaponData->lightSprintAttack);
+					break;
+				case EComboInput::Heavy:
+					PlayAttackMontage(combatData.weaponData->heavySprintAttack);
+					break;
+				default:
+					break;
+				}
+			}
+			else if (CanDodgeAttack())
+			{
+				switch (comboInput)
+				{
+				case EComboInput::Light:
+					PlayAttackMontage(combatData.weaponData->lightDodgeAttack);
+					break;
+				case EComboInput::Heavy:
+					PlayAttackMontage(combatData.weaponData->heavyDodgeAttack);
+					break;
+				default:
+					break;
+				}
 			}
 			else
 			{
-				currentComboCount++;
+				PlayAttackMontage(comboData[0]);
 			}
 		}
 	}
 }
 
-void UCombatSystem::OverrideAttack(EComboInput comboInput, FComboInfo overrideComboData, bool bResetComboCount, bool bIncreaseComboCount)
+void UCombatSystem::OverrideAttack(EComboInput comboInput, FComboInfo overrideComboData)
 {
 	if (CanAttack() && (IsValid(overrideComboData.montage)))
 	{
-		ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-		playerRef->PlayAnimMontage(overrideComboData.montage, 1.0f);
-		damageImpact = overrideComboData.damageImpact;
-		OnGroundAttack.Broadcast(overrideComboData);
-		if (bIncreaseComboCount) { currentComboCount++; }
+		PlayAttackMontage(overrideComboData);
 	}
 }
 
@@ -95,9 +88,65 @@ const int UCombatSystem::GetCurrentComboCount()
 	return static_cast<int>(currentComboCount);
 }
 
-const FTransform UCombatSystem::CalculateMotionWarpTargetTransform(AActor* targetActor)
+void UCombatSystem::PlayAttackMontage(FComboInfo comboInfo)
+{ 
+	ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
+	try
+	{
+		playerRef->PlayAnimMontage(comboInfo.montage, 1.0f, "Default");
+		damageImpact = comboInfo.damageImpact;
+		OnGroundAttack.Broadcast(comboInfo);
+		if (comboInfo.resetComboCount)
+		{
+			currentComboCount = 0;
+		}
+		else
+		{
+			currentComboCount++;
+		}
+	}
+	catch (const std::exception&)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Invalid combo sequence"))
+	}
+}
+
+void UCombatSystem::UpdateComboInfoArrays(EComboInput comboInput)
 {
-	return FTransform();
+	comboData.Empty();
+	comboTag.Empty();
+
+	switch (comboInput)
+	{
+	case EComboInput::Light:
+		if (GetAerialStatus())
+		{
+			combatData.weaponData->attackCombos[currentComboCount].lightAerialCombo.GenerateKeyArray(comboData);
+			combatData.weaponData->attackCombos[currentComboCount].lightAerialCombo.GenerateValueArray(comboTag);
+		}
+		else
+		{
+			combatData.weaponData->attackCombos[currentComboCount].lightGroundCombo.GenerateKeyArray(comboData);
+			combatData.weaponData->attackCombos[currentComboCount].lightGroundCombo.GenerateValueArray(comboTag);
+		}
+
+		break;
+	case EComboInput::Heavy:
+		if (GetAerialStatus())
+		{
+			combatData.weaponData->attackCombos[currentComboCount].heavyAerialCombo.GenerateKeyArray(comboData);
+			combatData.weaponData->attackCombos[currentComboCount].heavyAerialCombo.GenerateValueArray(comboTag);
+		}
+		else
+		{
+			combatData.weaponData->attackCombos[currentComboCount].heavyGroundCombo.GenerateKeyArray(comboData);
+			combatData.weaponData->attackCombos[currentComboCount].heavyGroundCombo.GenerateValueArray(comboTag);
+		}
+		break;
+
+	default:
+		break;
+	}
 }
 
 // * Copyright © 2025, Nathan Adotey. All Rights Reserved.

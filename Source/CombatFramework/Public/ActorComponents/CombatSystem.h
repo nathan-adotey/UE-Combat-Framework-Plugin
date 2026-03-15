@@ -58,8 +58,17 @@ public:
 	TArray<FName> comboTags;
 
 private:
+	// * Used to track the current attack input
+	EComboInput currentComboInput;
+
+	// * Used to cache the previous attack input
+	EComboInput previousComboInput;
+
 	// * Current combo count
 	unsigned short int currentComboCount;
+
+	TArray<FComboInfo> comboData;
+	TArray<FName> comboTag;
 
 public:
 	// * Attempt to execute a ground or aerial attack combo
@@ -68,7 +77,7 @@ public:
 
 	// * Attempt to override a ground or aerial attack combo
 	UFUNCTION(BlueprintCallable, Category = "Combat System")
-	void OverrideAttack(EComboInput comboInput, FComboInfo overrideComboData, bool bResetComboCount, bool bIncreaseComboCount);
+	void OverrideAttack(EComboInput comboInput, FComboInfo overrideComboData);
 
 	// * Reset the current combo count to 0
 	UFUNCTION(BlueprintCallable, Category = "Combat System")
@@ -77,10 +86,6 @@ public:
 	// * Returns the current combo index
 	UFUNCTION(BlueprintPure, Category = "Combat System")
 	const int GetCurrentComboCount();
-
-	// * Calculates a transform for the motion warp target
-	UFUNCTION(BlueprintPure, Category = "Combat System")
-	const FTransform CalculateMotionWarpTargetTransform(AActor* targetActor);
 
 public:
 	// * Returns TRUE if the player is in the air, FALSE if not (Conditions set within the editor)
@@ -91,10 +96,21 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	bool CanAttack();
 
+	// * Returns TRUE if the player can execute an attack while sprinting (Conditions set within the editor)
+	UFUNCTION(BlueprintImplementableEvent)
+	bool CanSprintAttack();
+
+	// * Returns TRUE if the player can execute an attack after dodging (Conditions set within the editor)
+	UFUNCTION(BlueprintImplementableEvent)
+	bool CanDodgeAttack();
+
 	// * Returns TRUE if the player can override their default ground combo sequence (Conditions set within the editor)
 	UFUNCTION(BlueprintImplementableEvent)
 	bool CanOverrideAttack();
 
+private:
+	void PlayAttackMontage(FComboInfo comboInfo);
+	void UpdateComboInfoArrays(EComboInput comboInput);
 };
 
 // * Copyright © 2025, Nathan Adotey. All Rights Reserved.

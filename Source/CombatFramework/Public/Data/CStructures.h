@@ -125,15 +125,31 @@ struct FCombatData
 public:
 	// * Weapon data asset
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UWeaponProfile* weaponData;
+	TObjectPtr<UWeaponProfile> weaponData;
+
+	// * Primary weapon (Skeletal mesh)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USkeletalMesh> primaryWeaponSkeletalMesh;
+
+	// * Secondary weapon (Skeletal mesh)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USkeletalMesh> secondaryWeaponSkeletalMesh;
+
+	// * Primary weapon (Static mesh)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UStaticMesh> primaryWeaponStaticMesh;
+
+	// * Secondary weapon (Static mesh)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UStaticMesh> secondaryWeaponStaticMesh;
 
 	// * Current weapon level
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,
 		meta = (
 			ClampMin = "1",
-			ClampMax = "10",
+			ClampMax = "100",
 			UIMin = "1",
-			UIMax = "10"
+			UIMax = "100"
 		)
 	)
 	int currentLevel = 1;
@@ -169,7 +185,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "1.0", UIMin = "0", UIMax = "1.0"))
 	float arcaneDamageModifier = 1.0f;
 
-	// * Resets combo count
+	// * Reset combo count if the player performs a seperate input from the previous one (e.g. The player presses a heavy input after a light input)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool resetComboCountOnSeperateInput = true;
+
+	// * Reset combo count (Force)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool resetComboCount = false;
 
