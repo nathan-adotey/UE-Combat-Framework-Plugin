@@ -91,23 +91,17 @@ const int UCombatSystem::GetCurrentComboCount()
 void UCombatSystem::PlayAttackMontage(FComboInfo comboInfo)
 { 
 	ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-	try
+	playerRef->PlayAnimMontage(comboInfo.montage, 1.0f, "Default");
+	damageImpact = comboInfo.damageImpact;
+	OnGroundAttack.Broadcast(comboInfo);
+	
+	if (comboInfo.resetComboCount)
 	{
-		playerRef->PlayAnimMontage(comboInfo.montage, 1.0f, "Default");
-		damageImpact = comboInfo.damageImpact;
-		OnGroundAttack.Broadcast(comboInfo);
-		if (comboInfo.resetComboCount)
-		{
-			currentComboCount = 0;
-		}
-		else
-		{
-			currentComboCount++;
-		}
+		currentComboCount = 0;
 	}
-	catch (const std::exception&)
+	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("Invalid combo sequence"))
+		currentComboCount++;
 	}
 }
 
