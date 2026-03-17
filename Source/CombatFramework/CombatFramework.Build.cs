@@ -26,7 +26,7 @@ public class CombatFramework : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core"
+				"Core", "Json", "JsonUtilities"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
