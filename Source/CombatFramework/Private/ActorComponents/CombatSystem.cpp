@@ -1,5 +1,6 @@
 // * Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
+#include "Inventory/Abilities/PlayerSkill.h"
 #include "Inventory/Items/WeaponProfile.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -75,6 +76,22 @@ void UCombatSystem::OverrideAttack(EComboInput comboInput, FComboInfo overrideCo
 	if (CanAttack() && (IsValid(overrideComboData.montage)))
 	{
 		PlayAttackMontage(overrideComboData);
+	}
+}
+
+void UCombatSystem::Skill(FComboInfo skillPayload)
+{
+	if (CanAttack() == true && (IsValid(skillPayload.montage)))
+	{
+		ResetComboCount();
+		ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
+		playerRef->PlayAnimMontage(skillPayload.montage, 1.0f, "Default");
+		OnGroundAttack.Broadcast(skillPayload);
+		UE_LOG(LogTemp, Log, TEXT("Skill event"))
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid skill parameters"))		
 	}
 }
 

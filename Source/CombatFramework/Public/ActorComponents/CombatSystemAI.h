@@ -13,6 +13,25 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGroundSlamAI);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGroundRushAttackAI);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAerialRushAttackAI);
 
+USTRUCT(BlueprintType)
+struct FCounterAttack
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimMontage> counterAttackMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "0", ClampMax = "1", UIMin = "0", UIMax = "1"))
+	float counterAttackDefaultRate = 0.01f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float counterAttackBuildUpRate = 0.01f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUseCounterAttack = false;
+};
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), Abstract, Blueprintable, DefaultToInstanced)
 class COMBATFRAMEWORK_API UCombatSystemAI : public UActorComponent
 {
@@ -46,6 +65,10 @@ public:
 	// * Static combat data
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat System")
 	FCombatData combatData;
+
+	// * Counter attack data
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat System")
+	FCounterAttack counterAttackData;
 
 	// * Array of hit reactions (selects a random element on hit while on the ground)
 	UPROPERTY(BlueprintReadWrite)

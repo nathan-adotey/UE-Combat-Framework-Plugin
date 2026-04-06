@@ -2,12 +2,12 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Gameframework/GameUserSettings.h"
+#include "GameFramework/GameUserSettings.h"
 #include "Services/GlobalSettingsSubsystem.h"
 
 void UGlobalSettingsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	gameSettings = GEngine->GameUserSettings; // Initialize game user settings object
+	gameSettings = GEngine->GetGameUserSettings(); // Initialize game user settings object
 	targetLockZoomOutDistance = 1.0f;
 }
 

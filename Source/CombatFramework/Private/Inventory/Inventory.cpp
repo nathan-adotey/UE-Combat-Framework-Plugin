@@ -1,6 +1,5 @@
 // * Copyright © 2025, Nathan Adotey. All Rights Reserved.
 
-#include "Inventory/Items/Firearm.h"
 #include "Inventory/Inventory.h"
 
 UInventory::UInventory()
@@ -9,7 +8,6 @@ UInventory::UInventory()
 	
 	// * Initialize member variables
 	weaponInventoryCapacity = 0;
-	ammoGauge = 5;
 }
 
 void UInventory::AddWeaponToInventory(FCombatData weapon)
@@ -50,22 +48,6 @@ void UInventory::EquipWeapon(const FCombatData newWeapon)
 	// * Update the current weapon object & invoke a callback method
 	onWeaponEquipped.Broadcast(newWeapon);
 	currentWeapon = newWeapon;
-}
-
-void UInventory::EquipFirearm(UFirearm* newFirearm)
-{
-	if (newFirearm)
-	{
-		// * Update the current firearm object & invoke a callback method
-		currentFirearm = newFirearm;
-		onFirearmEquipped.Broadcast(currentFirearm);
-	}
-}
-
-void UInventory::UnequipFirearm()
-{
-	currentFirearm = NULL;
-	onFirearmUnequipped.Broadcast();
 }
 
 void UInventory::EquipQuickAccessItem(UItemBase* item, const EQuickAccessSlotIndex targetSlot)

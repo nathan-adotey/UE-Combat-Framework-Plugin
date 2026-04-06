@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "GameplayTagContainer.h"
 #include "CoreMinimal.h"
 #include "Inventory/Items/ItemBase.h"
 #include "WeaponProfile.generated.h"
@@ -38,6 +39,10 @@ public:
 	// * Dodge attack (Heavy input)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
 	FComboInfo heavyDodgeAttack;
+
+	// * Gameplay tags
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
+	FGameplayTagContainer weaponCombatTags;
 
 	// * Physical attack modifier (i.e. light attack combos, physical skills)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",

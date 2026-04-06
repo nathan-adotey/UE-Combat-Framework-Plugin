@@ -5,9 +5,6 @@
 UPlayerSkill::UPlayerSkill()
 {
 	itemCategory = EItemCategory::Skill;
-
-	groundMontage = NULL;
-	aerialMontage = NULL;
 	
 	healthCost = 0.0f;
 	manaCost = 10.0f;

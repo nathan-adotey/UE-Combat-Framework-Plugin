@@ -49,13 +49,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat System")
 	FCombatData combatData;
 
-	// * Determines knockback and visual effect parameters when an attack lands
-	UPROPERTY(BlueprintReadWrite, Category = "Combat Properties")
-	EDamageImpact damageImpact;
+	// * Current skill payload
+	UPROPERTY(BlueprintReadOnly, Category = "Combat System")
+	FComboInfo currentSkillPayload;
 
 	// * Repository of combo tags (Enable extended combos)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Properties")
 	TArray<FName> comboTags;
+
+	// * Determines knockback and visual effect parameters when an attack lands
+	UPROPERTY(BlueprintReadWrite, Category = "Combat Properties")
+	EDamageImpact damageImpact;
 
 private:
 	// * Used to track the current attack input
@@ -78,6 +82,10 @@ public:
 	// * Attempt to override a ground or aerial attack combo
 	UFUNCTION(BlueprintCallable, Category = "Combat System")
 	void OverrideAttack(EComboInput comboInput, FComboInfo overrideComboData);
+
+	// * Attempt to execute a ground or aerial attack combo
+	UFUNCTION(BlueprintCallable, Category = "Combat System")
+	void Skill(FComboInfo skillPayload);
 
 	// * Reset the current combo count to 0
 	UFUNCTION(BlueprintCallable, Category = "Combat System")

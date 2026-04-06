@@ -16,7 +16,6 @@ class COMBATFRAMEWORK_API UJsonToolkit : public UBlueprintFunctionLibrary
 public:
 	// UFUNCTION(BlueprintCallable)
 	// void SerializeStructData();
-	
 };
 
 // * Copyright © 2025, Nathan Adotey. All Rights Reserved.

@@ -7,16 +7,12 @@
 #include "Components/ActorComponent.h"
 #include "Inventory.generated.h"
 
-class UFirearm;
-
 // * --- Delegate declarations ---
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponAdded, FCombatData, addedWeapon);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponRemoved, FCombatData, removedWeapon);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponEquipped, FCombatData, equippedWeapon);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponUnequipped, FCombatData, unequippedWeapon);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFirearmEquipped, UFirearm*, newFirearm);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFirearmUnequipped);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class COMBATFRAMEWORK_API UInventory : public UActorComponent
@@ -43,28 +39,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnWeaponUnequipped onWeaponUnequipped;
 
-	// * Callback method invoked when equipping a firearm
-	UPROPERTY(BlueprintAssignable)
-	FOnFirearmEquipped onFirearmEquipped;
-
-	// * Callback method invoked when unequipping a firearm
-	UPROPERTY(BlueprintAssignable)
-	FOnFirearmUnequipped onFirearmUnequipped;
-
 public:
 	// * Weapon inventory represented as an array
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FCombatData> weaponInventory;
 
-	/**
-	Quick access inventory represented as an array
-	- Comprises of consumables (non-healing items), skills, and other actions
-	- Bound to the gamepad's face buttons, or the keyboard's numbers
-	- Array accounts for a maximum of 4 elements
-	*/
-	UPROPERTY(BlueprintReadOnly, Category = "Inventory")
-	TArray<UItemBase*> quickAccessInventory;
-
+	
 	// * Capacity limit for the weapon inventory. A value of "0" indicates no capacity limit.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, 
 		meta = (
@@ -74,27 +54,31 @@ public:
 	)
 	int weaponInventoryCapacity;
 
-	// * Current weapon
-	UPROPERTY(BlueprintReadOnly)
-	FCombatData currentWeapon;
-
-	// * Current firearm
-	UPROPERTY(BlueprintReadOnly)
-	UFirearm* currentFirearm;
-
-	/** 
-	Current firearm's ammo capacity:
-	- Ammo is not a finite resource (i.e. Ammo doesnt need to be purchased, nor aquired to refill the firearm's gauge)
-	- The player has an opportunity to refill ammo when applying damage
-	- Damage is calculated based on the player's current level and bypassed all damage resistances
-	*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,
+	// * Maximum ability points
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, 
 		meta = (
 			UIMin = "0",
 			ClampMin = "0"
 		)
 	)
-	int ammoGauge;
+	int maximumAvilityPoints;
+
+	// * Current ability points
+	UPROPERTY(BlueprintReadOnly)
+	int currentAbilityPoints;
+
+	/**
+	* Quick access inventory represented as an array
+	- Comprises of consumables (non-healing items), skills, and other actions
+	- Bound to the gamepad's face buttons, or the keyboard's numbers
+	- Array accounts for a maximum of 4 elements
+	*/
+	UPROPERTY(BlueprintReadOnly, Category = "Inventory")
+	TArray<UItemBase*> quickAccessInventory;
+
+	// * Current weapon
+	UPROPERTY(BlueprintReadOnly)
+	FCombatData currentWeapon;
 
 public:
 	// * Add a weapon to the weapon inventory
@@ -117,12 +101,6 @@ public:
 	// * Attempt to equip a weapon
 	UFUNCTION(BlueprintCallable)
 	void EquipWeapon(const FCombatData newWeapon);
-
-	// * Equip a new firearm
-	void EquipFirearm(UFirearm* newFirearm);
-
-	// * Unequip firearm (if valid)
-	void UnequipFirearm();
 
 	/**
 	Equips an item for the quick-access management

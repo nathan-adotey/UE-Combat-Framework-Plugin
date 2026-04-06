@@ -18,11 +18,18 @@ public:
 public:
 	// * Plays this montage while the player is on the ground
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
-	TObjectPtr<UAnimMontage> groundMontage;
+	TMap<EWeaponCategory, FComboInfo> groundMontage;
 
 	// * Plays this montage while the player is in the air
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
-	TObjectPtr<UAnimMontage> aerialMontage;
+	TMap<EWeaponCategory, FComboInfo> aerialMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
+	bool bCanPlayOnGround = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
+	bool bCanPlayInAir = false;
+
 
 	// * MP cost (Mana)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats",
