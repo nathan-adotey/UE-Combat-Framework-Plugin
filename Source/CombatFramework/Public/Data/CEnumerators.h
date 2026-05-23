@@ -2,8 +2,6 @@
 
 #pragma once
 
-
-
 UENUM(BlueprintType)
 enum class EComboType : uint8 { Ground, Aerial };
 

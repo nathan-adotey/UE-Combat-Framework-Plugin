@@ -127,6 +127,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UWeaponProfile> weaponData;
 
+	// * Guard, parry, etc.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimMontage> defensiveAction;
+
 	// * Primary weapon (Skeletal mesh)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<USkeletalMesh> primaryWeaponSkeletalMesh;
@@ -172,6 +176,10 @@ public:
 	// * Impact hit yield different results on impact (i.e. knockbacks, normal stuns, knockdowns)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EDamageImpact damageImpact = EDamageImpact::Normal;
+
+	// * Determines whether the current combo can be played
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName comboTag = "Default";
 
 	// * Modifies attack output based on physical attack stat
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "1.0", UIMin = "0", UIMax = "1.0"))

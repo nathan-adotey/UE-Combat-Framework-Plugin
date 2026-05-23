@@ -10,10 +10,7 @@
 // * --- Declare function delegates for certain combat events
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGroundAttack, FComboInfo, comboInfo);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAirAttack);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGroundSlam);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGroundRushAttack);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAerialRushAttack);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDefensiveEvent);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Abstract, Blueprintable, DefaultToInstanced )
 class COMBATFRAMEWORK_API UCombatSystem : public UActorComponent
@@ -28,21 +25,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGroundAttack OnGroundAttack;
 
-	// * Function delegate which invokes a callback method when an aerial attack has been executed
+	// * Function delegate which invokes a callback method when a defensive event has been executed (e.g. Block, parry)
 	UPROPERTY(BlueprintAssignable)
-	FOnAirAttack OnAirAttack;
-
-	// * Function delegate which invokes a callback method when a ground slam has been executed
-	UPROPERTY(BlueprintAssignable)
-	FOnGroundSlam OnGroundSlam;
-
-	// * Function delegate which invokes a callback method when a ground rush attack has been executed
-	UPROPERTY(BlueprintAssignable)
-	FOnGroundRushAttack OnGroundRushAttack;
-
-	// * Function delegate which invokes a callback method when an aerial rush attack has been executed
-	UPROPERTY(BlueprintAssignable)
-	FOnAerialRushAttack OnAerialRushAttack;
+	FOnDefensiveEvent OnDefensiveEvent;
 
 public:
 	// * Static combat data
@@ -71,13 +56,14 @@ private:
 	// * Current combo count
 	unsigned short int currentComboCount;
 
-	TArray<FComboInfo> comboData;
-	TArray<FName> comboTag;
-
 public:
 	// * Attempt to execute a ground or aerial attack combo
 	UFUNCTION(BlueprintCallable, Category = "Combat System")
 	void Attack(EComboInput comboInput);
+
+	// * Attempt to execute a ground or aerial defensive action (e.g. Block, parry)
+	UFUNCTION(BlueprintCallable, Category = "Combat System")
+	void DefensiveEvent();
 
 	// * Attempt to override a ground or aerial attack combo
 	UFUNCTION(BlueprintCallable, Category = "Combat System")
@@ -104,13 +90,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	bool CanAttack();
 
-	// * Returns TRUE if the player can execute an attack while sprinting (Conditions set within the editor)
+	// * Returns TRUE if the player can perform a defensive action such as blocking or parrying (Conditions set within the editor)
 	UFUNCTION(BlueprintImplementableEvent)
-	bool CanSprintAttack();
-
-	// * Returns TRUE if the player can execute an attack after dodging (Conditions set within the editor)
-	UFUNCTION(BlueprintImplementableEvent)
-	bool CanDodgeAttack();
+	bool CanUseDefensiveEvent();
 
 	// * Returns TRUE if the player can override their default ground combo sequence (Conditions set within the editor)
 	UFUNCTION(BlueprintImplementableEvent)
@@ -118,7 +100,7 @@ public:
 
 private:
 	void PlayAttackMontage(FComboInfo comboInfo);
-	void UpdateComboInfoArrays(EComboInput comboInput);
+	bool TestComboTag(FName comboTag);
 };
 
 // * Copyright © 2025, Nathan Adotey. All Rights Reserved.

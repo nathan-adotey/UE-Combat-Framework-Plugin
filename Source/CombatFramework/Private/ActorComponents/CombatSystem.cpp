@@ -17,57 +17,37 @@ UCombatSystem::UCombatSystem()
 
 void UCombatSystem::Attack(EComboInput comboInput)
 {
-	if (CanAttack() == true)
+	if ((CanAttack()))
 	{
-		comboData.Empty();
-		comboTag.Empty();
-
 		previousComboInput = currentComboInput;
 		currentComboInput = comboInput;
 
-		UpdateComboInfoArrays(comboInput);
-		
-		if (comboTags.Contains(comboTag[0]) && (IsValid(comboData[0].montage)))
+		if (previousComboInput != currentComboInput)
 		{
-			if ((comboData[0].resetComboCountOnSeperateInput == true) && (currentComboInput != previousComboInput))
-			{
-				currentComboCount = 0;
-				UpdateComboInfoArrays(comboInput);
-			}
-
-			if (CanSprintAttack())
-			{
-				switch (comboInput)
-				{
-				case EComboInput::Light:
-					PlayAttackMontage(combatData.weaponData->lightSprintAttack);
-					break;
-				case EComboInput::Heavy:
-					PlayAttackMontage(combatData.weaponData->heavySprintAttack);
-					break;
-				default:
-					break;
-				}
-			}
-			else if (CanDodgeAttack())
-			{
-				switch (comboInput)
-				{
-				case EComboInput::Light:
-					PlayAttackMontage(combatData.weaponData->lightDodgeAttack);
-					break;
-				case EComboInput::Heavy:
-					PlayAttackMontage(combatData.weaponData->heavyDodgeAttack);
-					break;
-				default:
-					break;
-				}
-			}
-			else
-			{
-				PlayAttackMontage(comboData[0]);
-			}
+			currentComboCount = 0;
 		}
+
+		switch (comboInput)
+		{
+		case EComboInput::Light:
+			PlayAttackMontage(combatData.weaponData->basicAttackCombos[currentComboCount]);
+			break;
+		case EComboInput::Heavy:
+			PlayAttackMontage(combatData.weaponData->heavyAttackCombos[currentComboCount]);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void UCombatSystem::DefensiveEvent()
+{
+	if (CanUseDefensiveEvent())
+	{
+		ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
+		playerRef->PlayAnimMontage(combatData.defensiveAction, 1.0f, "Default");
+		OnDefensiveEvent.Broadcast();
 	}
 }
 
@@ -107,57 +87,33 @@ const int UCombatSystem::GetCurrentComboCount()
 
 void UCombatSystem::PlayAttackMontage(FComboInfo comboInfo)
 { 
-	ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
-	playerRef->PlayAnimMontage(comboInfo.montage, 1.0f, "Default");
-	damageImpact = comboInfo.damageImpact;
-	OnGroundAttack.Broadcast(comboInfo);
-	
-	if (comboInfo.resetComboCount)
+	if (IsValid(comboInfo.montage) && (TestComboTag(comboInfo.comboTag) == true))
 	{
-		currentComboCount = 0;
-	}
-	else
-	{
+		ACharacter* playerRef = UGameplayStatics::GetPlayerCharacter(GetOwner(), 0);
+		playerRef->PlayAnimMontage(comboInfo.montage, 1.0f, "Default");
+		damageImpact = comboInfo.damageImpact;
 		currentComboCount++;
+		OnGroundAttack.Broadcast(comboInfo);
+
+		if (comboInfo.resetComboCount)
+		{
+			currentComboCount = 0;
+		}
 	}
 }
 
-void UCombatSystem::UpdateComboInfoArrays(EComboInput comboInput)
+bool UCombatSystem::TestComboTag(FName comboTag)
 {
-	comboData.Empty();
-	comboTag.Empty();
-
-	switch (comboInput)
+	unsigned short int i = 0;
+	for (i; i < comboTags.Num(); i++)
 	{
-	case EComboInput::Light:
-		if (GetAerialStatus())
+		if (comboTags[i] == comboTag)
 		{
-			combatData.weaponData->attackCombos[currentComboCount].lightAerialCombo.GenerateKeyArray(comboData);
-			combatData.weaponData->attackCombos[currentComboCount].lightAerialCombo.GenerateValueArray(comboTag);
+			return true;
+			break;
 		}
-		else
-		{
-			combatData.weaponData->attackCombos[currentComboCount].lightGroundCombo.GenerateKeyArray(comboData);
-			combatData.weaponData->attackCombos[currentComboCount].lightGroundCombo.GenerateValueArray(comboTag);
-		}
-
-		break;
-	case EComboInput::Heavy:
-		if (GetAerialStatus())
-		{
-			combatData.weaponData->attackCombos[currentComboCount].heavyAerialCombo.GenerateKeyArray(comboData);
-			combatData.weaponData->attackCombos[currentComboCount].heavyAerialCombo.GenerateValueArray(comboTag);
-		}
-		else
-		{
-			combatData.weaponData->attackCombos[currentComboCount].heavyGroundCombo.GenerateKeyArray(comboData);
-			combatData.weaponData->attackCombos[currentComboCount].heavyGroundCombo.GenerateValueArray(comboTag);
-		}
-		break;
-
-	default:
-		break;
 	}
+	return false;
 }
 
 // * Copyright © 2025, Nathan Adotey. All Rights Reserved.

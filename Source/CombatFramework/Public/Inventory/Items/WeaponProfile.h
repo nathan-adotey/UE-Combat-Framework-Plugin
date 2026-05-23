@@ -20,25 +20,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat Data")
 	EWeaponCategory weaponCategory;
 
-	// * Combo sequences
+	// * Basic attack sequences
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
-	TArray<FComboSchema> attackCombos;
+	TArray<FComboInfo> basicAttackCombos;
 
-	// * Sprint attack (Light input)
+	// * Heavy attack sequences
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
-	FComboInfo lightSprintAttack;
-
-	// * Sprint attack (Heavy input)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
-	FComboInfo heavySprintAttack;
-
-	// * Dodge attack (Light input)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
-	FComboInfo lightDodgeAttack;
-
-	// * Dodge attack (Heavy input)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
-	FComboInfo heavyDodgeAttack;
+	TArray<FComboInfo> heavyAttackCombos;
 
 	// * Gameplay tags
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Data")
